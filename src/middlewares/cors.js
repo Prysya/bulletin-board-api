@@ -3,7 +3,7 @@ const cors = require('cors');
 
 const corsOptions = {
   origin: [
-    'https://prysya.github.io',
+    'http://localhost',
     'http://localhost:8080',
     'http://localhost:63342',
   ],

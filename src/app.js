@@ -57,7 +57,11 @@ app.use(errorHandler);
 
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:63342',
+    origin: [
+      'http://localhost',
+      'http://localhost:8080',
+      'http://localhost:63342',
+    ],
     credentials: true,
   },
 });
@@ -93,6 +97,6 @@ io.on('connection', chatSocket);
       console.log(`Server is running on port ${PORT}`); // eslint-disable-line
     });
   } catch (e) {
-    console.log('Starting error: ',e); // eslint-disable-line
+    console.log('Starting error: ', e); // eslint-disable-line
   }
 })();
