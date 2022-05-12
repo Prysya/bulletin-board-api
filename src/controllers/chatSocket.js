@@ -27,11 +27,15 @@ module.exports.chatSocket = (socket) => {
   });
 
   socket.on('sendMessage', async (msg) => {
-    const message = await Chat.sendMessage({
-      ...msg,
-      author: socket.request.user._id,
-    });
-    socket.emit('newMessage', message);
+    try {
+      const message = await Chat.sendMessage({
+        ...msg,
+        author: socket.request.user._id,
+      });
+      socket.emit('newMessage', message);
+    } catch (err) {
+      console.log(err);
+    }
   });
 
   socket.on('disconnect', () => {
