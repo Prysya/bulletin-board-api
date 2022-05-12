@@ -1,4 +1,6 @@
+const { ObjectId } = require('mongodb');
 const Chat = require('../models/chat');
+const { messages } = require('../utils');
 
 module.exports.chatSocket = (socket) => {
   const { session } = socket.request;
@@ -11,13 +13,24 @@ module.exports.chatSocket = (socket) => {
     socket.emit('whoareyou', socket.request.user ? socket.request.user : '');
   });
 
-  socket.on('getHistory', async (msg) => {
-    const chat = await Chat.find(msg);
-    socket.emit('chatHistory', chat);
+  socket.on('getHistory', async (id) => {
+    try {
+      if (ObjectId.isValid(id)) {
+        throw new Error(messages.advertisement.idIsNotValid);
+      }
+
+      const chat = await Chat.find({ users: [socket.request.user._id, id] });
+      socket.emit('chatHistory', chat.messages);
+    } catch {
+      socket.emit('chatHistory', null);
+    }
   });
 
   socket.on('sendMessage', async (msg) => {
-    const message = await Chat.sendMessage(msg);
+    const message = await Chat.sendMessage({
+      ...msg,
+      author: socket.request.user._id,
+    });
     socket.emit('newMessage', message);
   });
 
