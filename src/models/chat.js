@@ -1,6 +1,17 @@
 const { Schema, model, ObjectId } = require('mongoose');
 const createError = require('http-errors');
+const { EventEmitter } = require('events');
+
 const { messages } = require('../utils');
+
+class ChatRoom extends EventEmitter {
+  notice(chatId, message) {
+    this.emit('notice', chatId, message);
+    return this;
+  }
+}
+
+const chatRoom = new ChatRoom();
 
 const MessageSchema = new Schema({
   author: {
@@ -68,7 +79,11 @@ ChatSchema.statics.getHistory = async function getHistory(id) {
  * @memberOf ChatModule
  */
 ChatSchema.statics.subscribe = async function subscribe(cb) {
-  console.log(cb);
+  chatRoom.on('notice', (chatId, message) => {
+    if (typeof cb === 'function') {
+      cb(chatId, message);
+    }
+  });
 };
 
 /**
@@ -104,6 +119,8 @@ ChatSchema.statics.sendMessage = async function sendMessage(data) {
   chat.messages.push(message);
 
   await chat.save();
+
+  chatRoom.notice(chat._id, message);
 
   return message;
 };
