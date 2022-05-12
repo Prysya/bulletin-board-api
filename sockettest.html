@@ -11,10 +11,11 @@
   </head>
   <body>
     <button id="message">send message</button>
+    <button id="history">get history</button>
     <button id="test-docket2">Zapusk soketa</button>
     <script>
       const test = async () => {
-        const data = await fetch('http://localhost:3000/api/signin', {
+        const data = await fetch('http://localhost/api/signin', {
           method: 'POST',
           credentials: 'include',
           headers: {
@@ -31,23 +32,36 @@
 
         console.log(json);
 
-        const socket = io.connect('http://localhost:3000', {
+        const socket = io.connect('http://localhost', {
           withCredentials: true,
         });
 
-        socket.emit('whoami');
-
-        socket.on('whoareyou', (msg) => console.log('whoareyou', msg));
-
-        socket.on('message', (msg) => {
+        socket.on('newMessage', (msg) => {
           console.log('message: ', msg);
+        });
+
+        socket.on('chatHistory', (msg) => {
+          console.log('chatHistory: ', msg);
         });
 
         document
           .getElementById('message')
           .addEventListener('click', (event) => {
             event.preventDefault();
+
+            console.log('click message')
+
+            socket.emit('sendMessage', {
+              receiver: '62728c39a601e1aaa018aee5',
+              text: String(Math.random()),
+            });
           });
+
+        document.getElementById('history').addEventListener('click', (event) => {
+          event.preventDefault();
+
+          socket.emit('getHistory', '62728c39a601e1aaa018aee5')
+        })
       };
 
       document.getElementById('test-docket2').addEventListener('click', test);
