@@ -52,7 +52,7 @@ const ChatSchema = new Schema({
  * @memberOf ChatModule
  */
 ChatSchema.statics.find = async function find(data) {
-  const { author, receiver } = data;
+  const [author, receiver] = data;
 
   if (!author || !receiver) {
     throw createError(
@@ -78,7 +78,7 @@ ChatSchema.statics.getHistory = async function getHistory(id) {
  *
  * @memberOf ChatModule
  */
-ChatSchema.statics.subscribe = async function subscribe(cb) {
+ChatSchema.statics.subscribe = function subscribe(cb) {
   chatRoom.on('notice', (chatId, message) => {
     if (typeof cb === 'function') {
       cb(chatId, message);
