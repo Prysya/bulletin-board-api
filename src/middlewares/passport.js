@@ -41,16 +41,12 @@ passport.use(
 );
 
 // Конфигурирование Passport для сохранения пользователя в сессии
-passport.serializeUser((user, cb) => {
-  console.log('serializeUser', user);
-  cb(null, user._id);
-});
-passport.deserializeUser((id, cb) => {
-  console.log('deserializeUser', id);
-  return User.findById(id, (err, currentUser) =>
+passport.serializeUser((user, cb) => cb(null, user._id));
+passport.deserializeUser((id, cb) =>
+  User.findById(id, (err, currentUser) =>
     err ? cb(err) : cb(null, currentUser),
-  );
-});
+  ),
+);
 
 const checkIsAuth = (req, res, next) => {
   if (req.isAuthenticated && req.isAuthenticated()) {
