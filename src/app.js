@@ -14,6 +14,7 @@ const rateLimiter = require('./middlewares/rate-limiter');
 const { chatSocket } = require('./controllers/chatSocket');
 
 const router = require('./routes');
+const { messages } = require('./utils');
 
 require('dotenv').config();
 
@@ -68,11 +69,12 @@ io.use(wrap(expressSession));
 io.use(wrap(passport.initialize()));
 io.use(wrap(passport.session()));
 
-// io.use(socketWrapper(passport.authenticate('json-strategy')));
-
-io.use((session, next) => {
-  console.log({ user: session.request.user });
-  next();
+io.use((socket, next) => {
+  if (socket.request.user) {
+    next();
+  } else {
+    next(new Error(messages.auth.notAuthorised));
+  }
 });
 
 io.on('connection', chatSocket);
@@ -88,9 +90,9 @@ io.on('connection', chatSocket);
     });
 
     server.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+      console.log(`Server is running on port ${PORT}`); // eslint-disable-line
     });
   } catch (e) {
-    console.log(e);
+    console.log('Starting error: ',e); // eslint-disable-line
   }
 })();
