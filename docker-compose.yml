@@ -10,7 +10,7 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME:-root}
       - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD:-password}
-      - MONGO_INITDB_DATABASE=${DB_NAME:-library_database}
+      - MONGO_INITDB_DATABASE=${DB_NAME:-bulletin_database}
 
   mongo-express:
     image: mongo-express:1.0.0-alpha.4
@@ -32,7 +32,7 @@ services:
       - PORT=3000
       - DB_USERNAME=${DB_USERNAME:-root}
       - DB_PASSWORD=${DB_PASSWORD:-password}
-      - DB_NAME=${DB_NAME:-library_database}
+      - DB_NAME=${DB_NAME:-bulletin_database}
       - DB_HOST=mongodb://mongo:27017
     links:
       - mongo
