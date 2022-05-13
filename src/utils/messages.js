@@ -1,7 +1,7 @@
 module.exports = {
   auth: {
     authIsSuccess: 'Авторизация прошла успешно',
-    notAuthorised: 'Необходима авторизация',
+    notAuthorised: 'Необходима аутентификация',
     wrongEmailOrPassword: 'Неправильная почта или пароль',
     logout: 'Вы успешно вышли с учетной записи',
     notEnoughRights: 'Недостаточно прав для выполнения операции',
@@ -9,7 +9,8 @@ module.exports = {
   advertisement: {
     idIsNotValid: 'Данный id невалиден',
     shortTextIsRequired:
-      'Необходимо заполнить название статьи (поле shortText)',
+      'Необходимо заполнить название объявления (поле shortText)',
+    isDeleted: 'Объявление успешно удалено',
   },
   user: {
     passwordIsNotValid:
