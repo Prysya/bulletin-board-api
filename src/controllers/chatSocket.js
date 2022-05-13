@@ -9,8 +9,16 @@ module.exports.chatSocket = (socket) => {
 
   console.log(`Socket connected: ${socket.id}`);
 
-  Chat.subscribe((chatId, message) => {
-    socket.to(chatId).emit('newMessage', message);
+  socket.join(socket.request.user._id);
+
+  Chat.subscribe(async (chatId, message) => {
+    try {
+      const { users } = await Chat.findById(chatId);
+
+      socket.to(users[0]).to(users[1]).emit('newMessage', message);
+    } catch (err) {
+      console.log('Subscribed error: ', err);
+    }
   });
 
   socket.on('getHistory', async (id) => {
