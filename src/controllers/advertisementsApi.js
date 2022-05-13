@@ -114,14 +114,14 @@ module.exports.deleteAdvertisement = async (req, res, next) => {
       throw createError(403, messages.auth.notEnoughRights);
     }
 
-    const newAdv = await Advertisement.updateOne(advertisement, {
+    await Advertisement.updateOne(advertisement, {
       isDeleted: true,
       updatedAt: new Date(),
     });
 
-    console.log(newAdv);
-
-    res.status(201).json({ status: 'ok', message: 'kek' });
+    res
+      .status(201)
+      .json({ status: 'ok', message: messages.advertisement.isDeleted });
   } catch (err) {
     next(err);
   }
